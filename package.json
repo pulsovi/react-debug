@@ -1,7 +1,7 @@
 {
   "name": "react-debug",
   "description": "provide a hook to debug why and how a component is rerendered",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "index.js",
   "repository": "https://github.com/pulsovi/react-debug",
   "author": "David GABISON <david.gabison@outlook.com>",
