@@ -19,7 +19,7 @@ function useDebug(current, details = '') {
 function useDebugClass(instance, details) {
   /* eslint-disable no-underscore-dangle */
   instance.ref = instance.ref || { props: {}, state: {}};
-  const component = instance._reactInternalFiber.elementType.name;
+  const component = instance.constructor.name;
   const { fileName, lineNumber } = instance._reactInternalFiber._debugSource;
   const { props, state } = instance;
   return internalUseDebug({
@@ -169,4 +169,4 @@ fileName=${encFilename}&lineNumber=${line}&colNumber=${col}`;
 }
 
 module.exports = useDebug;
-module.exports.class = useDebugClass;
+module.exports.debug = useDebugClass;
