@@ -20,8 +20,11 @@ function useDebug(current, details = '') {
 function useDebugClass(instance, details) {
   instance.ref = instance.ref || { props: {}, state: {}};
   const component = instance.constructor.name;
-  const { fileName, lineNumber } = get(instance, '_reactInternals._debugSource') ||
-    get(instance, '_reactInternals.firstEffect._debugSource') || {};
+  const { fileName, lineNumber } =
+    get(instance, '_reactInternalFiber._debugSource') ||
+    get(instance, '_reactInternals._debugSource') ||
+    get(instance, '_reactInternals.firstEffect._debugSource') ||
+    {};
   const { props, state } = instance;
   return internalUseDebug({
     component,
