@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { get } = require('dot-prop');
 const { useRef } = require('react');
 const { parse, stringify } = require('telejson');
 
@@ -17,10 +18,10 @@ function useDebug(current, details = '') {
 
 // exposed for class component
 function useDebugClass(instance, details) {
-  /* eslint-disable no-underscore-dangle */
   instance.ref = instance.ref || { props: {}, state: {}};
   const component = instance.constructor.name;
-  const { fileName, lineNumber } = instance._reactInternalFiber._debugSource;
+  const { fileName, lineNumber } = get(instance, '_reactInternals._debugSource') ||
+    get(instance, '_reactInternals.firstEffect._debugSource') || {};
   const { props, state } = instance;
   return internalUseDebug({
     component,
@@ -29,7 +30,6 @@ function useDebugClass(instance, details) {
     loc: [fileName, lineNumber],
     ref: instance.ref,
   });
-  /* eslint-enable no-underscore-dangle */
 }
 
 // main function
@@ -143,9 +143,10 @@ function getLog(loc, head, actual, ref) {
   const debug = { actual, json: freeze({ actual, ref }), ref };
   const open = {};
 
-  Promise.resolve(loc).then(location => { open.url = openFile(location); });
+  Promise.resolve(loc).then(location => { open.url = openFile(...location); });
   return function log(...message) {
-    console.debug(...head, ...message, { ...debug, open }); // eslint-disable-line no-console
+    // eslint-disable-next-line no-console
+    console.debug(...head, ...message, { ...debug, open });
   };
 }
 
