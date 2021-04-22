@@ -1,5 +1,5 @@
-# Welcome to react-debug 👋
-[![Version](https://img.shields.io/npm/v/react-debug.svg)](https://www.npmjs.com/package/react-debug)
+# Welcome to @pulsovi/react-debug 👋
+[![Version](https://img.shields.io/npm/v/@pulsovi/react-debug.svg)](https://www.npmjs.com/package/@pulsovi/react-debug)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
 
 > provide a hook to debug why and how a component is rerendered
@@ -7,7 +7,7 @@
 ## Install
 
 ```sh
-npm install react-debug
+npm install @pulsovi/react-debug
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ Simplest usage for function component with some states.
 
 ```jsx
 import React, { useState } from 'react';
-import useDebug from 'react-debug';
+import useDebug from '@pulsovi/react-debug';
 
 export default function SomeComponentToDebug(props) {
   const [data, setData] = useState([]);
@@ -37,7 +37,7 @@ useDebug can get second parameter for more infos such in elem of list.
 
 ```jsx
 import React, { useState } from 'react';
-import useDebug from 'react-debug';
+import useDebug from '@pulsovi/react-debug';
 
 export default function SomeComponentToDebug(props) {
   const [value, setValue] = useState(null);
@@ -58,7 +58,7 @@ It can also be used in class components more easily.
 
 ```jsx
 import React from 'react';
-import { debug } from 'react-debug';
+import { debug } from '@pulsovi/react-debug';
 
 class SomeComponentToDebug extends React.Component {
   constructor(props) {
