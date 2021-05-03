@@ -143,13 +143,25 @@ function getLoc(loc) {
 
 function getLog(loc, head, NEW, OLD) {
   const debug = { NEW, OLD, json: freeze({ NEW, OLD }) };
+  const token = getToken(OLD, head);
   const open = {};
 
   Promise.resolve(loc).then(location => { open.url = openFile(...location); });
   return function log(...message) {
     // eslint-disable-next-line no-console
-    console.debug(...head, ...message, { ...debug, open });
+    console.debug(...token, ...message, { ...debug, open });
   };
+}
+
+function getToken(ref, head) {
+  const [title, ...styles] = head;
+
+  ref.renderIndex = (ref.renderIndex || 0) + 1;
+  return [
+    `${title} %c${ref.renderIndex}`,
+    ...styles,
+    'color: white; background: red; padding: 0 0.2em; margin: 0 0.1em;',
+  ];
 }
 
 function has(obj, key) {
