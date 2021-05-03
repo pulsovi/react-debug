@@ -4,15 +4,15 @@ const { useRef } = require('react');
 const { parse, stringify } = require('telejson');
 
 // exposed for function component
-function useDebug(current, details = '') {
+function useDebug(data, details) {
   const ref = useRef({ props: {}, state: {}});
   const [component, loc] = caller();
   return internalUseDebug({
+    NEW: data,
+    OLD: ref.current,
     component,
-    current,
     details,
     loc: getLoc(loc),
-    ref: ref.current,
   });
 }
 
@@ -27,45 +27,44 @@ function useDebugClass(instance, details) {
     {};
   const { props, state } = instance;
   return internalUseDebug({
+    NEW: { props, state },
+    OLD: instance.ref,
     component,
-    current: { props, state },
     details,
     loc: [fileName, lineNumber],
-    ref: instance.ref,
   });
 }
 
 // main function
-function internalUseDebug({ current, details, ref, component, loc }) {
+function internalUseDebug({ NEW, OLD, details, component, loc }) {
   const head = getHead(component, details);
-  const actual = { ...ref, ...current };
-  const log = getLog(loc, head, actual, ref);
+  const log = getLog(loc, head, NEW, OLD);
 
-  if (isFirst(ref, actual)) {
+  if (isFirst(OLD, NEW)) {
     log('first rendering');
     ['props', 'state'].forEach(block => {
-      Object.entries(actual[block]).forEach(([key, value]) => { ref[block][key] = value; });
+      Object.entries(NEW[block]).forEach(([key, value]) => { OLD[block][key] = value; });
     });
     return;
   }
   let change = false;
 
   ['props', 'state'].forEach(block => {
-    Object.entries(actual[block]).forEach(([key, value]) => {
-      if (value === ref[block][key]) return;
-      if (!has(ref[block], key)) {
+    Object.entries(NEW[block]).forEach(([key, value]) => {
+      if (value === OLD[block][key]) return;
+      if (!has(OLD[block], key)) {
         change = true;
         log(`new key : ${block}.${key}`);
-        ref[block][key] = value;
-      } else if (value !== ref[block][key]) {
+        OLD[block][key] = value;
+      } else if (value !== OLD[block][key]) {
         change = true;
         log(`new value for : ${block}.${key}\nnewValue: `, value,
-          '\noldValue: ', ref[block][key], '\n');
-        ref[block][key] = value;
+          '\noldValue: ', OLD[block][key], '\n');
+        OLD[block][key] = value;
       }
     });
-    Object.keys(ref[block]).forEach(key => {
-      if (!has(actual[block], key)) {
+    Object.keys(OLD[block]).forEach(key => {
+      if (!has(NEW[block], key)) {
         change = true;
         log(`deleted key : ${block}.${key}`);
       }
@@ -73,11 +72,11 @@ function internalUseDebug({ current, details, ref, component, loc }) {
   });
 
   if (change) return;
-  const actualStr = stringify(actual, { space: 2 });
-  const refStr = stringify(ref, { space: 2 });
+  const NEWStr = stringify(NEW, { space: 2 });
+  const OLDStr = stringify(OLD, { space: 2 });
 
-  if (actualStr !== refStr) {
-    log('deep change', { actualStr, refStr });
+  if (NEWStr !== OLDStr) {
+    log('deep change', { NEWStr, OLDStr });
     return;
   }
   log('unchanged');
@@ -142,8 +141,8 @@ function getLoc(loc) {
   });
 }
 
-function getLog(loc, head, actual, ref) {
-  const debug = { actual, json: freeze({ actual, ref }), ref };
+function getLog(loc, head, NEW, OLD) {
+  const debug = { NEW, OLD, json: freeze({ NEW, OLD }) };
   const open = {};
 
   Promise.resolve(loc).then(location => { open.url = openFile(...location); });
