@@ -45,7 +45,7 @@ function internalUseDebug({ NEW, OLD, details, component, loc }) {
     ['props', 'state'].forEach(block => {
       Object.entries(NEW[block]).forEach(([key, value]) => { OLD[block][key] = value; });
     });
-    return;
+    return log;
   }
   let change = false;
 
@@ -71,15 +71,15 @@ function internalUseDebug({ NEW, OLD, details, component, loc }) {
     });
   });
 
-  if (change) return;
-  const NEWStr = stringify(NEW, { space: 2 });
-  const OLDStr = stringify(OLD, { space: 2 });
+  if (!change) {
+    const NEWStr = stringify(NEW, { space: 2 });
+    const OLDStr = stringify(OLD, { space: 2 });
 
-  if (NEWStr !== OLDStr) {
-    log('deep change', { NEWStr, OLDStr });
-    return;
+    if (NEWStr === OLDStr) log('unchanged');
+    else log('deep change', { NEWStr, OLDStr });
   }
-  log('unchanged');
+
+  return log;
 }
 
 // utils
@@ -185,3 +185,5 @@ fileName=${encFilename}&lineNumber=${line}&colNumber=${col}`;
 
 module.exports = useDebug;
 module.exports.debug = useDebugClass;
+module.exports.useDebug = useDebug;
+module.exports.default = useDebug;
