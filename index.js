@@ -76,7 +76,7 @@ function internalUseDebug({ NEW, OLD, details, component, loc }) {
     const OLDStr = stringify(OLD, { space: 2 });
 
     if (NEWStr === OLDStr) log('unchanged');
-    else log('deep change', { NEWStr, OLDStr });
+    else log.error('deep change', { NEWStr, OLDStr });
   }
 
   return log;
