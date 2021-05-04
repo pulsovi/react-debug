@@ -147,10 +147,12 @@ function getLog(loc, head, NEW, OLD) {
   const open = {};
 
   Promise.resolve(loc).then(location => { open.url = openFile(...location); });
-  return function log(...message) {
-    // eslint-disable-next-line no-console
+  log.error = (...message) => console.error(...token, ...message, { ...debug, open });
+  return log;
+
+  function log(...message) {
     console.debug(...token, ...message, { ...debug, open });
-  };
+  }
 }
 
 function getToken(ref, head) {
