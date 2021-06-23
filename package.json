@@ -1,7 +1,7 @@
 {
   "name": "@pulsovi/react-debug",
   "description": "provide a hook to debug why and how a component is rerendered",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "main": "index.js",
   "repository": "https://github.com/pulsovi/react-debug",
   "author": "David GABISON <david.gabison@outlook.com>",
@@ -11,7 +11,9 @@
       "pulsovi"
     ]
   },
-  "files": ["index.js"],
+  "files": [
+    "index.js"
+  ],
   "peerDependencies": {
     "react": "^17.0.1"
   },
