@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { get } = require('dot-prop');
+const { get, has, set } = require('dot-prop');
 const { useRef } = require('react');
 const { parse, stringify } = require('telejson');
 
@@ -7,6 +7,8 @@ const { parse, stringify } = require('telejson');
 function useDebug(data, details) {
   const ref = useRef({ props: {}, state: {}});
   const [component, loc] = caller();
+
+  ['props', 'state'].forEach(key => { if (!has(data, key)) set(data, key, {}); });
   return internalUseDebug({
     NEW: data,
     OLD: ref.current,
@@ -164,10 +166,6 @@ function getToken(ref, head) {
     ...styles,
     'color: white; background: red; padding: 0 0.2em; margin: 0 0.1em;',
   ];
-}
-
-function has(obj, key) {
-  return Reflect.apply(Object.prototype.hasOwnProperty, obj, [key]);
 }
 
 function isFirst(ref, current) {
