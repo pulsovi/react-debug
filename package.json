@@ -11,6 +11,7 @@
       "pulsovi"
     ]
   },
+  "files": ["index.js"],
   "peerDependencies": {
     "react": "^17.0.1"
   },
