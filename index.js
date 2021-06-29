@@ -86,7 +86,8 @@ function internalUseDebug({ NEW, OLD, details, component, loc }) {
 
 // utils
 const hueCache = {};
-let nextHue = 0;
+// eslint-disable-next-line no-magic-numbers
+let nextHue = (Math.random() * 360) | 0;
 const fileCache = {};
 
 function caller(depth = 1) {
